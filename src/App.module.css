@@ -1,0 +1,22 @@
+.container {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.item {
+  border: 1px solid black;
+  flex-basis: 31%;
+  margin: 5px;
+  font-size: 50px;
+  text-align: center;
+}
+
+.title {
+  text-align: center;
+}
+
+.select {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
