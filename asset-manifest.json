@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/pairing-game/static/css/main.c2416bbc.css",
-    "main.js": "/pairing-game/static/js/main.4714855a.js",
+    "main.js": "/pairing-game/static/js/main.d521de92.js",
     "index.html": "/pairing-game/index.html",
     "main.c2416bbc.css.map": "/pairing-game/static/css/main.c2416bbc.css.map",
-    "main.4714855a.js.map": "/pairing-game/static/js/main.4714855a.js.map"
+    "main.d521de92.js.map": "/pairing-game/static/js/main.d521de92.js.map"
   },
   "entrypoints": [
     "static/css/main.c2416bbc.css",
-    "static/js/main.4714855a.js"
+    "static/js/main.d521de92.js"
   ]
 }
