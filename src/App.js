@@ -6,15 +6,15 @@ const defaultLength = 10;
 const Board = (props) => {
   return (
     <div className={styles.container}>
-      {props.board.map((item, index) => (
+      {props.board.map(({ item, isColor }, index) => (
         <div
           key={index}
           id={index}
-          style={{ backgroundColor: item ? "tomato" : "white" }}
+          style={{ backgroundColor: isColor ? "tomato" : "white" }}
           className={styles.item}
           onClick={props.onClick}
         >
-          {item ? item : "?"}
+          {item}
         </div>
       ))}
     </div>
@@ -40,16 +40,40 @@ const App = () => {
   const [backItems, setBackItems] = useState(getBackItems(defaultLength));
   const [solvedIndex, setSolvedIndex] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState([]);
+  const [win, setWin] = useState(false);
+
+  function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  function getBackItems(length) {
+    const temp = Array.from({ length: length / 2 }, (_, i) => i + 1);
+    let temp2 = [...temp, ...temp];
+    return shuffle(temp2);
+  }
 
   function handleClick(event) {
+    if (event.target.innerText !== "?") {
+      return;
+    }
     setSelectedIndex([...selectedIndex, +event.target.id]);
   }
 
-  function handleChange(event) {
+  function handleChangeSize(event) {
     const newLength = +event.target.value;
     setBackItems(getBackItems(newLength));
     setSolvedIndex([]);
     setSelectedIndex([]);
+  }
+
+  function handleRetry() {
+    setSolvedIndex([]);
+    setSelectedIndex([]);
+    setWin(false);
   }
 
   useEffect(() => {
@@ -57,8 +81,12 @@ const App = () => {
       setSelectedIndex([]);
     } else if (selectedIndex.length === 2) {
       if (backItems[selectedIndex[0]] === backItems[selectedIndex[1]]) {
-        setSolvedIndex([...solvedIndex, ...selectedIndex]);
+        const newSolved = [...solvedIndex, ...selectedIndex];
+        setSolvedIndex(newSolved);
         setSelectedIndex([]);
+        if (newSolved.length === backItems.length) {
+          setWin(true);
+        }
       } else {
         setTimeout(() => {
           setSelectedIndex([]);
@@ -68,34 +96,27 @@ const App = () => {
   }, [selectedIndex]);
 
   const indexForDisplay = [...solvedIndex, ...selectedIndex];
-  const boardForDisplay = backItems.map((item, index) =>
-    indexForDisplay.includes(index) ? item : null
-  );
+  const boardForDisplay = backItems.map((item, index) => {
+    const text = indexForDisplay.includes(index) ? item : "?";
+    const isColor = solvedIndex.includes(index) ? true : false;
+    return { item: text, isColor: isColor };
+  });
 
   return (
     <div>
       <h1 className={styles.title}>Welcome to Pairing Game!</h1>
-      <Board
-        board={boardForDisplay}
-        onClick={handleClick}
-      />
-      <ChooseSize onChange={handleChange} />
+      <Board board={boardForDisplay} onClick={handleClick} />
+      <ChooseSize onChange={handleChangeSize} />
+      <h3 className={styles.win}>
+        {win ? "축하합니다! 모두 맞추었습니다!" : null}
+      </h3>
+      <div className={styles.reBtn}>
+        <button onClick={handleRetry}>
+          다시
+        </button>
+      </div>
     </div>
   );
 };
-
-function shuffle(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-}
-
-function getBackItems(length) {
-  const temp = Array.from({ length: length / 2 }, (_, i) => i + 1);
-  let temp2 = [...temp, ...temp];
-  return shuffle(temp2);
-}
 
 export default App;
